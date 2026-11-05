@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACK BATTLE</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080808;color:white;
+ font-family:Arial,sans-serif;padding:22px;
+}
+header{text-align:center;padding:25px 0}
+h1{font-size:35px;color:#a855f7}
+p{color:#aaa}
+.card{
+ background:#171717;border:1px solid #333;
+ padding:20px;border-radius:18px;margin-top:25px;
+}
+textarea{
+ width:100%;height:130px;padding:15px;
+ background:#252525;color:white;
+ border:1px solid #555;border-radius:12px;
+ font-size:16px;resize:vertical;
+}
+button{
+ width:100%;padding:16px;margin-top:15px;
+ border:0;border-radius:12px;
+ background:#8b2cff;color:white;
+ font-size:17px;font-weight:bold;
+}
+#result{width:100%;margin-top:20px;border-radius:15px}
+#status{color:#aaa;text-align:center}
+</style>
+</head>
+<body>
+<header>
+<h1>🖤 BLACK BATTLE</h1>
+<p>AI IMAGE GENERATOR</p>
+</header>
+
+<div class="card">
+<h2>🎨 Rasm yaratish</h2>
+<p>O'zing xohlagan rasmni tasvirla:</p>
+<textarea id="prompt" placeholder="Masalan: qora BMW, tungi shahar..."></textarea>
+<button onclick="draw()">⚡ RASM YARATISH</button>
+<p id="status">Kunlik limit: 10 ta rasm</p>
+<img id="result" hidden>
+</div>
+
+<script>
+async function draw(){
+ const prompt=document.getElementById('prompt').value.trim();
+ const status=document.getElementById('status');
+ const result=document.getElementById('result');
+
+ if(!prompt){
+  alert("Avval rasm tavsifini yoz!");
+  return;
+ }
+
+ status.textContent="AI rasm yaratmoqda...";
+ result.hidden=true;
+
+ try{
+  const response=await fetch('/api/generate',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({prompt})
+  });
+
+  const data=await response.json();
+
+  if(!response.ok) throw new Error(data.error || "Xatolik");
+
+  result.src=data.image;
+  result.hidden=false;
+  status.textContent="Rasm tayyor! 🖤";
+ }catch(e){
+  status.textContent=e.message;
+ }
+}
+</script>
+</body>
+</html>
